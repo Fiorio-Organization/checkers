@@ -1,57 +1,152 @@
-#include "headers/player.hpp"
-#include "headers/H_player.hpp"
-//#include "headers/AI_player.hpp"
-#include <iostream>
+/*
+       MAPEAMENTO DO TABULEIRO
+        0 - livre
+        1 - brancas
+        2 - pretas
 
-using namespace std;
+        0    2   2   2   2 
+        1  2   2   2   2
+        2    2   2   2   2
+        3  0   0   0   0
+        4    0   0   0   0
+        5  1   1   1   1
+        6    1   1   1   1
+        7  1   1   1   1
+           0 1 2 3 4 5 6 7
 
-void imprime(int tabuleiro[8][4]){
-    for(int i=0;i<8;i++){
-        for(int j=0;j<4;j++){
-            if(i%2==0) //linha é par, então a ordem de impressão dos quadrados é "branco/preto" 
-              std::cout << " ";  
-            
-            if(tabuleiro[i][j]==1)
-                std::cout << "B" << " ";
-            else if(tabuleiro[i][j]==-1)
-                std::cout << "P" << " ";
-            else
-                std::cout << "O" << " ";
+*/
 
-            if(i%2!=0) //linha é ímpar, então a ordem de impressão dos quadrados é "preto/branco" 
-              std::cout << " ";  
-            
-        }
-        std::cout << std::endl;
+#include "EstadoDamas.hpp"
+
+#include <float.h> // Obter o valor de infinito (DBL_MAX)
+#include <vector> // receber os estados filhos
+#include <cmath>  // funções max e min.
+
+EstadoDamas * escolhaIA;
+double maiorH = -DBL_MAX;
+int maxProfundide = 7;
+
+
+double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundidade){
+    // Se o estado for folha, OU atingiu profundidade méxima
+    if(atual->eFolha() || profundidade == 0){
+        return atual->heuristica();
     }
+    double h;
+    // Verificar se o nó é de máximo ou mínimo.
+    if(eMax){
+        // Vez do MAX
+        h = -DBL_MAX; // menos infinito.
+        // Gerar os filhos de MAX
+        std::vector <Estado *> filhos = atual->expandir(true);
+        for(int i = 0; i < filhos.size(); i++){
+            double hFilho = minimax(filhos[i], false, alfa, beta, profundidade - 1);
+            h = std::max(h, hFilho);
+            alfa = std::max(alfa, hFilho);
+            // Tô na raiz?
+            if(profundidade == maxProfundide){
+                if(h > maiorH){
+                    maiorH = h;
+                    escolhaIA = dynamic_cast<EstadoDamas *>(filhos[i]);
+                }
+            }
+            // SEGREDO!!!
+            if(alfa >= beta){
+                return h;
+            }
+        }
+    }else{
+        // Vez do MIN
+        h = DBL_MAX; // mais infinito.
+        // Gerar os filhos de MIN
+        std::vector <Estado *> filhos = atual->expandir(false);
+        for(int i = 0; i < filhos.size(); i++){
+            double hFilho = minimax(filhos[i], true, alfa, beta, profundidade - 1);
+            h = std::min(h, hFilho);
+            beta = std::min(beta, hFilho);
+            if(alfa >= beta){
+                return h;
+            }
+        }
+    }
+    // Se nenhuma poda ocorreu, propaga para o pai o h calculado!
+    return h;
 }
 
 int main(){
-    // -1: Black | 1: White
+
+    // tabuleiro inicial
+    /*
     int tabuleiro[8][4] = {
-            {-1,-1,-1,-1},
-            {-1,-1,-1,-1},
-            {-1,-1,-1,-1},
-            { 0, 0, 0, 0},
-            { 0, 0, 0, 0},
-            { 1 ,1 ,1 ,1},
-            { 1 ,1 ,1 ,1},
-            { 1 ,1 ,1 ,1}
-        };
+        {-1,-1,-1,-1},
+        {-1,-1,-1,-1},
+        {-1,-1,-1,-1},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 1 ,1 ,1 ,1},
+        { 1 ,1 ,1 ,1},
+        { 1 ,1 ,1 ,1}
+    };
+    */
+    int tabuleiro[8][4] = {
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 1, 0,-1,-1},
+        { 0, 0, 0, 0},
+        {-1, 0, 0, 0},
+        { 1, 0,-1, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0}
+    };
 
-    bool team;
-    cout<<"White(1)|Black(0)"<<endl<<"Jogador: ";
-    cin>>team;
+    EstadoDamas * atual = new EstadoDamas(tabuleiro, true);
+    atual->imprime();
+    std::cout<<std::endl<<"Heuristica Inicial: "<<atual->heuristica()<<std::endl;
     
-    H_Player * player = new H_Player(tabuleiro, team);
-    //Player * ia = new IA_player(tabuleiro, team);
+    std::cout<<std::endl<<"----------------"<<std::endl<<std::endl;
+    /*
+    cout<<"eFolha: "<<atual->eFolha()<<endl;
+    cout<<"Heuristica: "<<atual->heuristica()<<endl;
+    if(atual->eFolha()){
+        if(atual->heuristica()<0)
+            cout << "Brancas Ganharam!" << endl;
+        else if(atual->heuristica()>0)
+            cout << "Pretas Ganharam!" << endl;
+    }
+    */
+    // Enquanto o jogo não acabar ... 
+    while(!atual->eFolha()){
+        maiorH = -DBL_MAX;
+        double h = minimax(atual, true, -DBL_MAX, DBL_MAX, maxProfundide);
+        std::cout<<std::endl<<"-------IA-------"<<std::endl<<std::endl;
+        escolhaIA->imprime();
+        
+        
+        std::cout<<std::endl<<"Debug:"<<std::endl;
+        std::cout<<"eFolha: "<<escolhaIA->eFolha()<<std::endl;
+        std::cout<<"Heuristica: "<<escolhaIA->heuristica()<<std::endl;
+        std::cout<<std::endl<<"----------------"<<std::endl<<std::endl;
 
-    cout<<endl;
-    imprime(tabuleiro);
-    player->teste(tabuleiro);
-    cout<<endl;
-    imprime(tabuleiro);
-    cout<<endl;
-    player->movePeca(5,2,2,tabuleiro);
-    imprime(tabuleiro);
+        if(escolhaIA->eFolha()){
+            if(h > 0){
+                std::cout << "Brancas venceram!!!" << std::endl;
+            }
+            break;
+        }
+
+        std::cout<<std::endl<<"-----PLAYER-----"<<std::endl<<std::endl;
+        atual = escolhaIA->jogadaHumano();
+        std::cout<<std::endl<<"Debug:"<<std::endl;
+        std::cout<<"eFolha: "<<atual->eFolha()<<std::endl;
+        std::cout<<"Heuristica: "<<atual->heuristica()<<std::endl;
+        std::cout<<std::endl<<"----------------"<<std::endl<<std::endl;
+        h = atual->heuristica();
+        if(atual->eFolha()){
+            if(h < 0){
+                std::cout << "Pretas venceram!!!" << std::endl;
+            }
+            break;
+        }
+    }
+    return 0;
 }
