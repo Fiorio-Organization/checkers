@@ -24,7 +24,7 @@
 
 EstadoDamas * escolhaIA;
 double maiorH = -DBL_MAX;
-int maxProfundide = 13;
+int maxProfundide = 9;
 
 
 double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundidade){
