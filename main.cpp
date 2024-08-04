@@ -24,7 +24,7 @@
 
 EstadoDamas * escolhaIA;
 double maiorH = -DBL_MAX;
-int maxProfundide = 7;
+int maxProfundide = 13;
 
 
 double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundidade){
@@ -73,10 +73,20 @@ double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundi
     return h;
 }
 
+void limpaArvore(EstadoDamas * estado){
+    if(!estado->eFolha()){
+        for(int i=0; i<estado->filhos.size();i++)
+            limpaArvore(estado->filhos[i]);
+    }
+    if(estado!=escolhaIA){
+        delete estado;
+    }
+}
+
 int main(){
 
     // tabuleiro inicial
-    /*
+    
     int tabuleiro[8][4] = {
         {-1,-1,-1,-1},
         {-1,-1,-1,-1},
@@ -87,7 +97,7 @@ int main(){
         { 1 ,1 ,1 ,1},
         { 1 ,1 ,1 ,1}
     };
-    */
+    /*
     int tabuleiro[8][4] = {
         { 0, 0, 0, 0},
         { 0, 0, 0, 0},
@@ -98,22 +108,13 @@ int main(){
         { 0, 0, 0, 0},
         { 0, 0, 0, 0}
     };
-
+    */
     EstadoDamas * atual = new EstadoDamas(tabuleiro, true);
     atual->imprime();
     std::cout<<std::endl<<"Heuristica Inicial: "<<atual->heuristica()<<std::endl;
     
     std::cout<<std::endl<<"----------------"<<std::endl<<std::endl;
-    /*
-    cout<<"eFolha: "<<atual->eFolha()<<endl;
-    cout<<"Heuristica: "<<atual->heuristica()<<endl;
-    if(atual->eFolha()){
-        if(atual->heuristica()<0)
-            cout << "Brancas Ganharam!" << endl;
-        else if(atual->heuristica()>0)
-            cout << "Pretas Ganharam!" << endl;
-    }
-    */
+    
     // Enquanto o jogo não acabar ... 
     while(!atual->eFolha()){
         maiorH = -DBL_MAX;
@@ -126,7 +127,10 @@ int main(){
         std::cout<<"eFolha: "<<escolhaIA->eFolha()<<std::endl;
         std::cout<<"Heuristica: "<<escolhaIA->heuristica()<<std::endl;
         std::cout<<std::endl<<"----------------"<<std::endl<<std::endl;
-
+        
+        /*for(int i=0;i < escolhaIA->filhos.size();i++)
+            std::cout << "escolhaIA: " <<escolhaIA->filhos[i] << std::endl;
+        */
         if(escolhaIA->eFolha()){
             if(h > 0){
                 std::cout << "Brancas venceram!!!" << std::endl;
@@ -134,8 +138,12 @@ int main(){
             break;
         }
 
+        if(maxProfundide>=9)
+            limpaArvore(atual);
+        
         std::cout<<std::endl<<"-----PLAYER-----"<<std::endl<<std::endl;
         atual = escolhaIA->jogadaHumano();
+        //std::cout << "atual: " << atual << std::endl;
         std::cout<<std::endl<<"Debug:"<<std::endl;
         std::cout<<"eFolha: "<<atual->eFolha()<<std::endl;
         std::cout<<"Heuristica: "<<atual->heuristica()<<std::endl;

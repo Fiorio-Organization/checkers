@@ -27,6 +27,8 @@ class EstadoDamas : public Estado{
         void imprime();
         void imprime(int tabuleiro[8][4]);
 
+        bool seExisteEstado(int tabuleiro[8][4]);
+        std::vector<EstadoDamas *> filhos;
 
         /*[Linha][Coluna]
         (1)Move Superior esquerdo

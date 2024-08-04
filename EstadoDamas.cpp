@@ -257,7 +257,6 @@ std::vector<Estado *> EstadoDamas::expandir(bool eMax){
         for(int i=0; i<8; i++)
             for(int j=0; j<4; j++)
                 if(tabuleiro[i][j] == 1)
-                    // verifica se tem 1 peca aliada nessa direcao dir e se é possivel fazer o movimento para tal direcao
                     for(int mov=1; mov<=8; mov++) //1 = supEsq | 2 = supDir | 3 = Esq | 4 = Dir | 5 = infEsq | 6 = infDir / dir é pra onde ta olhando
                         //trata 1 peca e a move para a direcao dir somente
                         if((mov<=2 || mov>=5) && ePermitido(i,j,mov)){ // verifica se o espaco na direcao dir é vazio para fazer o movimento nessa direcao mesmo
@@ -278,9 +277,19 @@ std::vector<Estado *> EstadoDamas::expandir(bool eMax){
                             std::cout<<"Tabuleiro FILHO"<<std::endl;
                             imprime(tabuleiroFilho);
                             */
-
-                            EstadoDamas * filho = new EstadoDamas(tabuleiroFilho, this->eMax);
-                            filhos.push_back(filho);
+                            bool existe=false;
+                            for(int i=0; i< this->filhos.size();i++)
+                                if(this->filhos[i]->seExisteEstado(tabuleiroFilho)){
+                                    filhos.push_back(this->filhos[i]);
+                                    existe = true;
+                                }
+                            if(!existe){
+                                EstadoDamas * filho = new EstadoDamas(tabuleiroFilho, this->eMax);
+                            
+                                filhos.push_back(filho);
+                                this->filhos.push_back(filho);
+                            }
+                            
                         }   
     }
     else // eMax == false
@@ -309,8 +318,19 @@ std::vector<Estado *> EstadoDamas::expandir(bool eMax){
                             std::cout<<"Tabuleiro FILHO"<<std::endl;
                             imprime(tabuleiroFilho);
                             */
-                            EstadoDamas * filho = new EstadoDamas(tabuleiroFilho, this->eMax);
-                            filhos.push_back(filho);
+                            
+                            bool existe=false;
+                            for(int i=0; i< this->filhos.size();i++)
+                                if(this->filhos[i]->seExisteEstado(tabuleiroFilho)){
+                                    filhos.push_back(this->filhos[i]);
+                                    existe = true;
+                                }
+                            if(!existe){
+                                EstadoDamas * filho = new EstadoDamas(tabuleiroFilho, this->eMax);
+                            
+                                filhos.push_back(filho);
+                                this->filhos.push_back(filho);
+                            }
                         }   
     
     return filhos;
@@ -338,6 +358,9 @@ EstadoDamas * EstadoDamas::jogadaHumano(){
 
                 this->movePeca(l,c,mov,tabuleiroHumano);
 
+                for(int i=0; i<this->filhos.size();i++)
+                    if(this->filhos[i]->seExisteEstado(tabuleiroHumano))
+                        return this->filhos[i];
                 return new EstadoDamas(tabuleiroHumano, this->eMax);
             }
             else
@@ -397,4 +420,13 @@ void EstadoDamas::imprime(int tabuleiro[8][4]){
         }
         std::cout << std::endl;
     }
+}
+
+bool EstadoDamas::seExisteEstado(int tabuleiro[8][4]){
+    for(int i=0;i<7;i++)
+        for(int j=0;j<4;j++){
+            if(tabuleiro[i][j] != this->tabuleiro[i][j])
+                return false;
+        }
+    return true;
 }
