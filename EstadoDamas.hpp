@@ -9,10 +9,13 @@ class EstadoDamas : public Estado{
         int tabuleiro[8][4]; // 0 = vazio | 1 = MAX | -1 = MIN | 3 = fora
         bool eMax;
         void copia(int origem[8][4], int destino[8][4]);
-        bool ePermitido(int linha, int coluna, int mov);
+        bool ePermitido(int tabuleiro[8][4], int linha, int coluna, int mov);
         
     public:
         EstadoDamas(int tabuleiro[8][4], bool eMax);
+
+        std::vector<Estado *> seqCaptura(int tabuleiro[8][4], int i, int j, int mov, short int profundidade);
+        short int profJogada; // profundidade da jogada, representa o num de movimentos de captura que a peca consegue fazer no maximo na jogada
         
         bool eFolha();
         double heuristica();
@@ -29,6 +32,8 @@ class EstadoDamas : public Estado{
 
         bool seExisteEstado(int tabuleiro[8][4]);
         std::vector<EstadoDamas *> filhos;
+
+        bool geteMax();
 
         /*[Linha][Coluna]
         (1)Move Superior esquerdo

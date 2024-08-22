@@ -25,7 +25,7 @@
 EstadoDamas * escolhaIA;
 double maiorH = -DBL_MAX;
 int maxProfundide = 9;
-
+// 3 - fácil / 5 - médio / 9 - difícil / 11 - muito difícil
 
 double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundidade){
     // Se o estado for folha, OU atingiu profundidade méxima
@@ -86,7 +86,7 @@ void limpaArvore(EstadoDamas * estado){
 int main(){
 
     // tabuleiro inicial
-    
+    /**/
     int tabuleiro[8][4] = {
         {-1,-1,-1,-1},
         {-1,-1,-1,-1},
@@ -97,6 +97,7 @@ int main(){
         { 1 ,1 ,1 ,1},
         { 1 ,1 ,1 ,1}
     };
+    
     /*
     int tabuleiro[8][4] = {
         { 0, 0, 0, 0},
@@ -109,18 +110,61 @@ int main(){
         { 0, 0, 0, 0}
     };
     */
+    /*
+    int tabuleiro[8][4] = {
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0,-1, 0, 0},
+        { 0, 0, 0, 0},
+        { 0,-1, -1, 0},
+        { 0, 1, 0, 0},
+        { 0, 0, 0, 0}
+    };
+    */
+    /*
+    int tabuleiro[8][4] = {
+        { 0, 0, -1, 0},
+        { 0, 0, -1, 0},
+        { 0, 0, 0, 0},
+        { 0, 0,-1, 0},
+        { 0, 0, 0, 0},
+        { 0,-1, -1, 0},
+        { 0, 1, 0, 0},
+        { 0, 0, 0, 0}
+    };
+    */
+   /*
+    int tabuleiro[8][4] = {
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0}
+    };
+    */
+    escolhaIA = new EstadoDamas(tabuleiro, true);
     EstadoDamas * atual = new EstadoDamas(tabuleiro, true);
     atual->imprime();
     std::cout<<std::endl<<"Heuristica Inicial: "<<atual->heuristica()<<std::endl;
-    
+    std::cout<<std::endl<<"Dificuldade: "<<maxProfundide<<std::endl;
     std::cout<<std::endl<<"----------------"<<std::endl<<std::endl;
     
     // Enquanto o jogo não acabar ... 
     while(!atual->eFolha()){
         maiorH = -DBL_MAX;
-        double h = minimax(atual, true, -DBL_MAX, DBL_MAX, maxProfundide);
+        double h = minimax(atual, escolhaIA->geteMax(), -DBL_MAX, DBL_MAX, maxProfundide);
         std::cout<<std::endl<<"-------IA-------"<<std::endl<<std::endl;
-        escolhaIA->imprime();
+        try{
+            escolhaIA->imprime();
+        }  
+        catch(...){
+            std::cout<<"Sem Tabuleiro"<<std::endl;
+        }
+
         
         
         std::cout<<std::endl<<"Debug:"<<std::endl;
@@ -138,7 +182,7 @@ int main(){
             break;
         }
 
-        if(maxProfundide>=9)
+        //if(maxProfundide>=9)
             limpaArvore(atual);
         
         std::cout<<std::endl<<"-----PLAYER-----"<<std::endl<<std::endl;
