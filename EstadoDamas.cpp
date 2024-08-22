@@ -173,10 +173,10 @@ bool EstadoDamas::ePermitido(int tabuleiro[8][4], int linha, int coluna, int mov
         }
         
         if(equipe==1)              // sem tratamento para King <<<<<<<<<<<
-            return tabuleiro[linha][coluna] == 0 && tabuleiro[eLinha][eColuna]==-1; // (tabuleiro[eLinha][eColuna]==-10) king
+            return tabuleiro[linha][coluna] == 0 && tabuleiro[eLinha][eColuna]==-1; // (tabuleiro[eLinha][eColuna]==-5) king
         
         else
-            return tabuleiro[linha][coluna] == 0 && tabuleiro[eLinha][eColuna]==1; // (tabuleiro[eLinha][eColuna]==10) king
+            return tabuleiro[linha][coluna] == 0 && tabuleiro[eLinha][eColuna]==1; // (tabuleiro[eLinha][eColuna]==5) king
     }
 
     return false;
@@ -254,6 +254,8 @@ void EstadoDamas::movePeca(int i, int j, int mov, int tabuleiroFilho[8][4]){
         else
             tabuleiroFilho[i+1][j] = 0;
     }
+
+    temCoroacao(tabuleiro);
 }
 
 std::vector<Estado *> EstadoDamas::seqCaptura(int tabuleiro[8][4], int i, int j, int mov, short int profundidade){
@@ -603,6 +605,24 @@ void EstadoDamas::imprime(int tabuleiro[8][4]){
             
         }
         std::cout << std::endl;
+    }
+}
+
+void EstadoDamas::temCoroacao(){
+    for(int j=0;j<4;j++){
+        if(this->tabuleiro[0][j]==1)
+            this->tabuleiro[0][j]=5;
+        else if(this->tabuleiro[7][j]==-1)
+            this->tabuleiro[7][j]=-5;
+    }
+}
+
+void EstadoDamas::temCoroacao(int tabuleiro[8][4]){
+    for(int j=0;j<4;j++){
+        if(tabuleiro[0][j]==1)
+            tabuleiro[0][j]=5;
+        else if(tabuleiro[7][j]==-1)
+            tabuleiro[7][j]=-5;
     }
 }
 

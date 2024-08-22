@@ -24,7 +24,7 @@
 
 EstadoDamas * escolhaIA;
 double maiorH = -DBL_MAX;
-int maxProfundide = 9;
+int maxProfundide = 1;
 // 3 - fácil / 5 - médio / 9 - difícil / 11 - muito difícil
 
 double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundidade){
@@ -88,7 +88,7 @@ int main(){
     // tabuleiro inicial
     /**/
     int tabuleiro[8][4] = {
-        {-1,-1,-1,-1},
+        {-1,-1,-1, 1},
         {-1,-1,-1,-1},
         {-1,-1,-1,-1},
         { 0, 0, 0, 0},

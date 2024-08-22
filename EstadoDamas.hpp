@@ -25,6 +25,9 @@ class EstadoDamas : public Estado{
         void movePeca(int i, int j, int dir, int tabuleiroFilho[8][4]); //int iOrig, int jOrig,
         std::vector<Estado *> expandir(bool eMax);
 
+        void temCoroacao();
+        void temCoroacao(int tabuleiro[8][4]);
+
         EstadoDamas * jogadaHumano();
 
         void imprime();
