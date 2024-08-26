@@ -6,6 +6,15 @@ EstadoDamas::EstadoDamas(int tabuleiro[8][4], bool eMax){
     this->eMax = eMax;
 }
 
+// GETTERS E SETTERS
+
+void EstadoDamas::setProfRei(short int profRei){
+    this->profRei = profRei;
+}
+
+short int EstadoDamas::getProfRei(){
+    return this->profRei;
+}
 
 bool EstadoDamas::geteMax(){
     return this->eMax;
@@ -50,6 +59,17 @@ bool EstadoDamas::eFolha(){
                     }
                 }
             }
+            else if(tabuleiro[i][j] == 3){
+                pecasMAX = true; // MAX tem pecas (Regra 1)
+
+                if(!podeMoverMAX){
+                    for(int k=1; k<=4; k++){
+                        podeMoverMAX = ePermitidoRei(tabuleiro,i,j,k,1);
+                        if(podeMoverMAX) // MAX pode mover (Regra 2)
+                            break;
+                    }
+                }
+            }
 
                          
             else if(tabuleiro[i][j] == -1){
@@ -59,6 +79,22 @@ bool EstadoDamas::eFolha(){
                     for(int k=1; k<=8; k++){
                         podeMoverMIN = ePermitido(tabuleiro,i,j,k);
                         if(podeMoverMIN) // MIN pode mover (Regra 2)
+                            break;
+                    }
+                    for(int k=1; k<=4; k++){
+                        podeMoverMIN = ePermitidoRei(tabuleiro,i,j,k,1);
+                        if(podeMoverMIN) // MAX pode mover (Regra 2)
+                            break;
+                    }
+                }  
+            }
+            else if(tabuleiro[i][j] == -3){
+                pecasMIN = true; // MIN tem pecas (Regra 1)
+
+                if(!podeMoverMIN){
+                    for(int k=1; k<=4; k++){
+                        podeMoverMIN = ePermitidoRei(tabuleiro,i,j,k,1);
+                        if(podeMoverMIN) // MAX pode mover (Regra 2)
                             break;
                     }
                 }  
@@ -79,9 +115,9 @@ double EstadoDamas::heuristica(){
 
    for(int i = 0; i < 8; i++){
         for(int j = 0; j < 4; j++){
-            if(tabuleiro[i][j] == 1 || tabuleiro[i][j] == 5) //branca
+            if(tabuleiro[i][j] == 1 || tabuleiro[i][j] == 3) //branca
                 pecasMAX+= tabuleiro[i][j];
-            else if(tabuleiro[i][j] == -1 || tabuleiro[i][j] == -5) //preta
+            else if(tabuleiro[i][j] == -1 || tabuleiro[i][j] == -3) //preta
                 pecasMIN+= tabuleiro[i][j];
         }
     }
@@ -182,6 +218,58 @@ bool EstadoDamas::ePermitido(int tabuleiro[8][4], int linha, int coluna, int mov
     return false;
 }
 
+bool EstadoDamas::ePermitidoRei(int tabuleiro[8][4], int linha, int coluna, int mov){
+    return 0;
+}
+
+// usado para movimentos de um Rei
+bool EstadoDamas::ePermitidoRei(int tabuleiro[8][4], int linha, int coluna, int mov, int p){
+/*
+                REI
+        Movimentos permitidos
+        - Mover nas quatro diagonais até o limite do campo ou peça aliada/adversária
+        - Capturar uma peça adversária, tanto peças adversárias frontais e traseiras  
+
+        DIREÇÕES
+        1 - Esquerda Frontal
+        2 - Direita Frontal
+        3 - Esquerda Traseira
+        4 - Direita Traseira
+    */
+    // Tratamento de movimentos sem captura 1 2 3 4
+    for(int i=0;i<p;i++){
+    
+        if(mov==1 || mov==2 || mov==3 || mov==4){
+            // esse bloco é pra evitar repitir linha+- nos blocos abaixo
+            if(mov==1 || mov==2) // sobe na matriz
+                linha--;
+            else if(mov==3 || mov==4) // desce na matriz
+                linha++;
+
+            // Verificando indice fora do campo [8][4]
+            if(linha<0 || linha >7)
+                return 0;
+
+            // tratamento diferente para linhas impares e pares
+            // lembrando que a linha ja foi alterada lá em cima, então precisa inverter neste bloco
+            if(linha%2!=0){ // ÍMPAR
+                if(mov == 2 || mov == 4)
+                    coluna++;
+            }
+            else{ // PAR
+                if(mov == 1 || mov == 3)
+                    coluna--;
+            }
+
+            if(coluna<0 || coluna>3)
+                return 0;
+            
+            
+        }
+    }
+    return tabuleiro[linha][coluna] == 0;
+}
+
 void EstadoDamas::movePeca(int i, int j, int mov, int tabuleiroFilho[8][4]){
     /*
         Legenda:
@@ -196,30 +284,30 @@ void EstadoDamas::movePeca(int i, int j, int mov, int tabuleiroFilho[8][4]){
     // movimentos de peça    
     if(mov == 1){
         if(i%2==0) // linha PAR
-            tabuleiroFilho[i-1][j] = i-1 == 0 ? pecaAtual*5 : pecaAtual;
+            tabuleiroFilho[i-1][j] = i-1 == 0 ? pecaAtual*3 : pecaAtual;
         else // linha IMPAR
-            tabuleiroFilho[i-1][j-1] = i-1 == 0 ? pecaAtual*5 : pecaAtual;
+            tabuleiroFilho[i-1][j-1] = i-1 == 0 ? pecaAtual*3 : pecaAtual;
     }
     
     else if(mov == 2){
         if(i%2==0)
-            tabuleiroFilho[i-1][j+1] = i-1 == 0 ? pecaAtual*5 : pecaAtual;
+            tabuleiroFilho[i-1][j+1] = i-1 == 0 ? pecaAtual*3 : pecaAtual;
         else
-            tabuleiroFilho[i-1][j] = i-1 == 0 ? pecaAtual*5 : pecaAtual;
+            tabuleiroFilho[i-1][j] = i-1 == 0 ? pecaAtual*3 : pecaAtual;
     }
     
     else if(mov == 3){
         if(i%2==0)
-            tabuleiroFilho[i+1][j] = i+1 == 7 ? pecaAtual*5 : pecaAtual;
+            tabuleiroFilho[i+1][j] = i+1 == 7 ? pecaAtual*3 : pecaAtual;
         else
-            tabuleiroFilho[i+1][j-1] = i+1 == 7 ? pecaAtual*5 : pecaAtual;
+            tabuleiroFilho[i+1][j-1] = i+1 == 7 ? pecaAtual*3 : pecaAtual;
     }
     
     else if(mov == 4){
         if(i%2==0)
-            tabuleiroFilho[i+1][j+1] = i+1 == 7 ? pecaAtual*5 : pecaAtual;
+            tabuleiroFilho[i+1][j+1] = i+1 == 7 ? pecaAtual*3 : pecaAtual;
         else
-            tabuleiroFilho[i+1][j] = i+1 == 7 ? pecaAtual*5 : pecaAtual;
+            tabuleiroFilho[i+1][j] = i+1 == 7 ? pecaAtual*3 : pecaAtual;
     }
 
     // ataques (igual para os 2 jogadores)
@@ -255,6 +343,95 @@ void EstadoDamas::movePeca(int i, int j, int mov, int tabuleiroFilho[8][4]){
             tabuleiroFilho[i+1][j] = 0;
     }
 
+    temCoroacao(tabuleiro);
+}
+
+void EstadoDamas::moveRei(int i, int j, int mov, int tabuleiroFilho[8][4], int p){
+    /*
+        Legenda:    Movimento REI
+        i e j são a posição da peça a ser movida
+        mov é o movimento (andar peça ou capturar)
+        p eh a profundidade do movimento do rei
+    */
+
+    int pecaAtual = tabuleiroFilho[i][j]; // obtendo a peca
+    tabuleiroFilho[i][j] = 0; // zera o quadrado da peça selecionada, pois ela vai se mover
+    
+    for(int k=0;k<p;k++){
+
+        // movimentos de peça    
+        if(mov == 1){
+            if(i%2==0) // linha PAR
+                i--;
+            else{ // linha IMPAR
+                i--;
+                j--;
+            } 
+        }
+        
+        else if(mov == 2){
+            if(i%2==0){
+                i--;
+                j++;
+            } 
+            else
+                i--;
+        }
+        
+        else if(mov == 3){
+            if(i%2==0)
+                i++;
+            else{
+                i++;
+                j--;
+            }
+        }
+        
+        else if(mov == 4){
+            if(i%2==0){
+                i++;
+                j++;
+            }
+            else
+                i++;
+        }
+
+        /*          AINDA PRECISA FAZER
+        // ataques (igual para os 2 jogadores)
+        else if(mov == 5){
+            tabuleiroFilho[i-2][j-1] = pecaAtual; // nao muda para PAR e IMPAR
+            if(i%2==0) // linha PAR
+                tabuleiroFilho[i-1][j] = 0;
+            else // linha IMPAR
+                tabuleiroFilho[i-1][j-1] = 0;
+        }
+
+        else if(mov == 6){
+            tabuleiroFilho[i-2][j+1] = pecaAtual;
+            if(i%2==0)
+                tabuleiroFilho[i-1][j+1] = 0;
+            else
+                tabuleiroFilho[i-1][j] = 0;
+        }
+
+        else if(mov == 7){
+            tabuleiroFilho[i+2][j-1] = pecaAtual;
+            if(i%2==0)
+                tabuleiroFilho[i+1][j] = 0;
+            else
+                tabuleiroFilho[i+1][j-1] = 0;
+        }
+
+        else if(mov == 8){
+            tabuleiroFilho[i+2][j+1] = pecaAtual;
+            if(i%2==0)
+                tabuleiroFilho[i+1][j+1] = 0;
+            else
+                tabuleiroFilho[i+1][j] = 0;
+        }
+        */
+    }
+    tabuleiroFilho[i][j] = pecaAtual;
     temCoroacao(tabuleiro);
 }
 
@@ -343,12 +520,12 @@ std::vector<Estado *> EstadoDamas::expandir(bool eMax){
 
     this->profJogada = 0;
     
-    for(int i=0; i<8; i++)
-        for(int j=0; j<4; j++)
-            if(tabuleiro[i][j] == x){
+    // movimento de captura
+    for(int i=0; i<8; i++){
+        for(int j=0; j<4; j++){
+            if(tabuleiro[i][j] == x){ // se é uma peça normal
                 for(int mov=5;mov<=8;mov++){
                     if(ePermitido(tabuleiro,i,j,mov)){
-                        // funcaoCaptura();
                         int tabuleiroFilho[8][4]; // criar filho temporario igual o pai
                         this->copia(this->tabuleiro, tabuleiroFilho);
                         movePeca(i,j,mov,tabuleiroFilho);
@@ -369,11 +546,38 @@ std::vector<Estado *> EstadoDamas::expandir(bool eMax){
                 }
                 
             }
-        
+            /*
+            if(tabuleiro[i][j] == (x*3)){ // se é um rei
+                for(int mov=5;mov<=8;mov++){
+                    if(ePermitidoRei(tabuleiro,i,j,mov)){
+                        int tabuleiroFilho[8][4]; // criar filho temporario igual o pai
+                        this->copia(this->tabuleiro, tabuleiroFilho);
+                        movePeca(i,j,mov,tabuleiroFilho);
+                        this->profJogada = this->profJogada<1 ? 1 : this->profJogada;
+                        
+                        prof_local = this->profJogada;
+                        newFilhos = seqCaptura(tabuleiroFilho, i, j, mov, 2);
+                        if(prof_local!=this->profJogada){ // this->profJogada foi alterado?
+                            // foi alterado, então deletar todo conteudo do vetor filhos
+                            if(!filhos.empty())
+                                filhos.erase(filhos.begin(),filhos.begin()+filhos.size());
+                        }
+
+                        if(!newFilhos.empty())
+                            for(int l=0;l<newFilhos.size();l++)
+                                filhos.push_back(newFilhos[l]);
+                    }
+                }
+                
+            }*/
+        }
+    }
+
+    // SE não tem nenhuma jogada de captura
     //if(filhos.empty()){
     if(this->profJogada==0){
-        for(int i=0; i<8; i++)
-            for(int j=0; j<4; j++)
+        for(int i=0; i<8; i++){
+            for(int j=0; j<4; j++){
                 if(tabuleiro[i][j] == x){
                     // funcaoMovimento();
                     if(x==1){
@@ -423,6 +627,28 @@ std::vector<Estado *> EstadoDamas::expandir(bool eMax){
                     }
  
                 }
+                if(tabuleiro[i][j] == (x*3)){ // se é um rei
+                    for(int mov=1;mov<=4;mov++){
+                        for(int p=1;p<=7;p++){ // verificar toda a profundidade de mov do Rei
+                            if(ePermitidoRei(tabuleiro,i,j,mov,p)){
+                                int tabuleiroFilho[8][4]; // criar filho temporario igual o pai
+                                this->copia(this->tabuleiro, tabuleiroFilho);
+
+                                moveRei(i,j,mov,tabuleiroFilho,p);
+                                
+                                EstadoDamas * filho = new EstadoDamas(tabuleiroFilho, this->eMax);
+                                
+                                filhos.push_back(filho);
+                                this->filhos.push_back(filho);
+                            }
+                            else
+                                p = 8; // se não for permitido, verifica o proximo mov
+                        }
+                    }
+                
+                }
+            }
+        }    
     }
     
     return filhos;
@@ -566,11 +792,11 @@ void EstadoDamas::imprime(){
             
             if(this->tabuleiro[i][j]==1)
                 std::cout << "b" << " ";
-            else if(this->tabuleiro[i][j]==5)
+            else if(this->tabuleiro[i][j]==3)
                 std::cout << "B" << " ";
             else if(this->tabuleiro[i][j]==-1)
                 std::cout << "p" << " ";
-            else if(this->tabuleiro[i][j]==-5)
+            else if(this->tabuleiro[i][j]==-3)
                 std::cout << "P" << " ";
             else
                 std::cout << "O" << " ";
@@ -591,11 +817,11 @@ void EstadoDamas::imprime(int tabuleiro[8][4]){
             
             if(tabuleiro[i][j]==1)
                 std::cout << "b" << " ";
-            else if(tabuleiro[i][j]==5)
+            else if(tabuleiro[i][j]==3)
                 std::cout << "B" << " ";
             else if(tabuleiro[i][j]==-1)
                 std::cout << "p" << " ";
-            else if(tabuleiro[i][j]==-5)
+            else if(tabuleiro[i][j]==-3)
                 std::cout << "P" << " ";
             else
                 std::cout << "O" << " ";
@@ -611,18 +837,18 @@ void EstadoDamas::imprime(int tabuleiro[8][4]){
 void EstadoDamas::temCoroacao(){
     for(int j=0;j<4;j++){
         if(this->tabuleiro[0][j]==1)
-            this->tabuleiro[0][j]=5;
+            this->tabuleiro[0][j]=3;
         else if(this->tabuleiro[7][j]==-1)
-            this->tabuleiro[7][j]=-5;
+            this->tabuleiro[7][j]=-3;
     }
 }
 
 void EstadoDamas::temCoroacao(int tabuleiro[8][4]){
     for(int j=0;j<4;j++){
         if(tabuleiro[0][j]==1)
-            tabuleiro[0][j]=5;
+            tabuleiro[0][j]=3;
         else if(tabuleiro[7][j]==-1)
-            tabuleiro[7][j]=-5;
+            tabuleiro[7][j]=-3;
     }
 }
 

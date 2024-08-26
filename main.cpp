@@ -24,7 +24,7 @@
 
 EstadoDamas * escolhaIA;
 double maiorH = -DBL_MAX;
-int maxProfundide = 1;
+int maxProfundide = 5;
 // 3 - fácil / 5 - médio / 9 - difícil / 11 - muito difícil
 
 double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundidade){
@@ -83,12 +83,20 @@ void limpaArvore(EstadoDamas * estado){
     }
 }
 
+void formataTabuleiro(int tabuleiro[8][4]){
+    for(int j=0;j<4;j++)
+        tabuleiro[0][j] = tabuleiro[0][j] == 1 ? tabuleiro[0][j]*3 : tabuleiro[0][j];
+
+    for(int j=0;j<4;j++)
+        tabuleiro[7][j] = tabuleiro[7][j] == -1 ? tabuleiro[7][j]*3 : tabuleiro[7][j];
+}
+
 int main(){
 
     // tabuleiro inicial
-    /**/
+    /*
     int tabuleiro[8][4] = {
-        {-1,-1,-1, 1},
+        {-1,-1,-1,-1},
         {-1,-1,-1,-1},
         {-1,-1,-1,-1},
         { 0, 0, 0, 0},
@@ -97,7 +105,7 @@ int main(){
         { 1 ,1 ,1 ,1},
         { 1 ,1 ,1 ,1}
     };
-    
+    */
     /*
     int tabuleiro[8][4] = {
         { 0, 0, 0, 0},
@@ -134,18 +142,20 @@ int main(){
         { 0, 0, 0, 0}
     };
     */
-   /*
+    /**/
     int tabuleiro[8][4] = {
+        { -1, 0, 0, 0},
         { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
+        { 0, 1, 0, 0},
         { 0, 0, 0, 0},
         { 0, 0, 0, 0},
         { 0, 0, 0, 0},
         { 0, 0, 0, 0},
         { 0, 0, 0, 0}
     };
-    */
+
+    formataTabuleiro(tabuleiro);
+    
     escolhaIA = new EstadoDamas(tabuleiro, true);
     EstadoDamas * atual = new EstadoDamas(tabuleiro, true);
     atual->imprime();

@@ -10,6 +10,9 @@ class EstadoDamas : public Estado{
         bool eMax;
         void copia(int origem[8][4], int destino[8][4]);
         bool ePermitido(int tabuleiro[8][4], int linha, int coluna, int mov);
+        bool ePermitidoRei(int tabuleiro[8][4], int linha, int coluna, int mov);
+        bool ePermitidoRei(int tabuleiro[8][4], int linha, int coluna, int mov, int p);
+        short int profRei;
         
     public:
         EstadoDamas(int tabuleiro[8][4], bool eMax);
@@ -23,6 +26,7 @@ class EstadoDamas : public Estado{
         //bool eAliado(int i,int j,int dir,int profundidade);
         
         void movePeca(int i, int j, int dir, int tabuleiroFilho[8][4]); //int iOrig, int jOrig,
+        void moveRei(int i, int j, int dir, int tabuleiroFilho[8][4], int p);
         std::vector<Estado *> expandir(bool eMax);
 
         void temCoroacao();
@@ -36,6 +40,9 @@ class EstadoDamas : public Estado{
         bool seExisteEstado(int tabuleiro[8][4]);
         std::vector<EstadoDamas *> filhos;
 
+        void setProfRei(short int profRei);
+
+        short int getProfRei();
         bool geteMax();
 
         /*[Linha][Coluna]
