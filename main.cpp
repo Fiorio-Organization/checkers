@@ -24,8 +24,8 @@
 
 EstadoDamas * escolhaIA;
 double maiorH = -DBL_MAX;
-int maxProfundide = 5;
-// 3 - fácil / 5 - médio / 9 - difícil / 11 - muito difícil
+int maxProfundide = 3;
+// 1- muito fácil / 3 - fácil / 5 - médio / 7 - difícil / 9 - muito difícil
 
 double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundidade){
     // Se o estado for folha, OU atingiu profundidade méxima
@@ -42,7 +42,7 @@ double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundi
         for(int i = 0; i < filhos.size(); i++){
             double hFilho = minimax(filhos[i], false, alfa, beta, profundidade - 1);
             h = std::max(h, hFilho);
-            alfa = std::max(alfa, hFilho);
+            //alfa = std::max(alfa, hFilho);
             // Tô na raiz?
             if(profundidade == maxProfundide){
                 if(h > maiorH){
@@ -50,10 +50,12 @@ double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundi
                     escolhaIA = dynamic_cast<EstadoDamas *>(filhos[i]);
                 }
             }
+            /*
             // SEGREDO!!!
             if(alfa >= beta){
                 return h;
             }
+            */
         }
     }else{
         // Vez do MIN
@@ -63,15 +65,18 @@ double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundi
         for(int i = 0; i < filhos.size(); i++){
             double hFilho = minimax(filhos[i], true, alfa, beta, profundidade - 1);
             h = std::min(h, hFilho);
+            /*
             beta = std::min(beta, hFilho);
             if(alfa >= beta){
                 return h;
             }
+            */
         }
     }
     // Se nenhuma poda ocorreu, propaga para o pai o h calculado!
     return h;
 }
+
 
 void limpaArvore(EstadoDamas * estado){
     if(!estado->eFolha()){
@@ -94,7 +99,7 @@ void formataTabuleiro(int tabuleiro[8][4]){
 int main(){
 
     // tabuleiro inicial
-    /*
+    /**/
     int tabuleiro[8][4] = {
         {-1,-1,-1,-1},
         {-1,-1,-1,-1},
@@ -105,7 +110,7 @@ int main(){
         { 1 ,1 ,1 ,1},
         { 1 ,1 ,1 ,1}
     };
-    */
+    
     /*
     int tabuleiro[8][4] = {
         { 0, 0, 0, 0},
@@ -142,18 +147,30 @@ int main(){
         { 0, 0, 0, 0}
     };
     */
-    /**/
+    /*
     int tabuleiro[8][4] = {
+        { 3, 0, 0, 0},
         { -1, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 1, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
+        { -1, 0, 0, 0},
+        { 0, -1, 0, 0},
+        { 0, -1, 0, 0},
+        { 0, 0, -1, 0},
         { 0, 0, 0, 0},
         { 0, 0, 0, 0}
     };
-
+    */
+    /*
+    int tabuleiro[8][4] = {
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { -1, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 0, 1, 0, 0}
+    };
+    */
     formataTabuleiro(tabuleiro);
     
     escolhaIA = new EstadoDamas(tabuleiro, true);
@@ -196,7 +213,20 @@ int main(){
             limpaArvore(atual);
         
         std::cout<<std::endl<<"-----PLAYER-----"<<std::endl<<std::endl;
-        atual = escolhaIA->jogadaHumano();
+    
+        std::vector <Estado *> escolhas = escolhaIA->expandir(false);
+        std::cout << "Escolha sua Jogada\n" << std::endl;
+        for(int i = 0; i < escolhas.size(); i++){
+            atual = dynamic_cast<EstadoDamas *>(escolhas[i]);
+            std::cout <<"     ("<< i <<")" << std::endl;
+            atual->imprime();
+            std::cout << "----------------\n" << std::endl;
+        }
+        int escolha;
+        std::cout<<"Numero da jogada: "; std::cin >> escolha;
+        atual = dynamic_cast<EstadoDamas *>(escolhas[escolha]);
+
+        //atual = escolhaIA->jogadaHumano();
         //std::cout << "atual: " << atual << std::endl;
         std::cout<<std::endl<<"Debug:"<<std::endl;
         std::cout<<"eFolha: "<<atual->eFolha()<<std::endl;

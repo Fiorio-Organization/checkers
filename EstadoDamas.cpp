@@ -208,11 +208,11 @@ bool EstadoDamas::ePermitido(int tabuleiro[8][4], int linha, int coluna, int mov
                 eColuna--;
         }
         
-        if(equipe==1)              // sem tratamento para King <<<<<<<<<<<
-            return tabuleiro[linha][coluna] == 0 && tabuleiro[eLinha][eColuna]==-1; // (tabuleiro[eLinha][eColuna]==-5) king
+        if(equipe==1)
+            return tabuleiro[linha][coluna] == 0 && (tabuleiro[eLinha][eColuna]==-1 || tabuleiro[eLinha][eColuna]==-3);
         
         else
-            return tabuleiro[linha][coluna] == 0 && tabuleiro[eLinha][eColuna]==1; // (tabuleiro[eLinha][eColuna]==5) king
+            return tabuleiro[linha][coluna] == 0 && (tabuleiro[eLinha][eColuna]==1 || tabuleiro[eLinha][eColuna]==3);
     }
 
     return false;
