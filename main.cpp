@@ -22,9 +22,13 @@
 #include <vector> // receber os estados filhos
 #include <cmath>  // funções max e min.
 
+// bibliotecas usadas para depuracao
+#include <cstdlib>
+#include <time.h> 
+
 EstadoDamas * escolhaIA;
 double maiorH = -DBL_MAX;
-int maxProfundide = 3;
+int maxProfundide = 7, turno = 0;
 // 1- muito fácil / 3 - fácil / 5 - médio / 7 - difícil / 9 - muito difícil
 
 double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundidade){
@@ -99,7 +103,7 @@ void formataTabuleiro(int tabuleiro[8][4]){
 int main(){
 
     // tabuleiro inicial
-    /**/
+    /*
     int tabuleiro[8][4] = {
         {-1,-1,-1,-1},
         {-1,-1,-1,-1},
@@ -110,26 +114,49 @@ int main(){
         { 1 ,1 ,1 ,1},
         { 1 ,1 ,1 ,1}
     };
+    */
+    /*
+    int tabuleiro[8][4] = {
+        { 0, -1, 0, -1},
+        { -1, -1, 0, 0},
+        { 0, 1, 0, -1},
+        { 0, 1, 0, 0},
+        { 1, 1, 1, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 1, 1, 1, 1}
+    };
+    */
+    /* 
+      int tabuleiro[8][4] = {
+        { 0, -1, 0, -1},
+        { -1, -1, 0, 0},
+        { 0, 0, 0, -1},
+        { 0, 1, 1, 0},
+        { 1, 1, 1, 0},
+        { 0, 0, 0, 0},
+        { 0, 0, 0, 0},
+        { 1, 1, 1, 1}
+    };
+    */
+    int tabuleiro[8][4] = {
+        {-1, -1, 0, -1},
+        { -1, -1, 0, 0},
+        { 0, 1, 0, -1},
+        { 0, 1, 0, 0},
+        { 1, 1, 1, 0},
+        { 0, 0, 1, 0},
+        { 0, 0,-1, 0},
+        { 1, 1, 0, 0}
+    };
     
     /*
     int tabuleiro[8][4] = {
         { 0, 0, 0, 0},
         { 0, 0, 0, 0},
-        { 1, 0,-1,-1},
-        { 0, 0, 0, 0},
-        {-1, 0, 0, 0},
-        { 1, 0,-1, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0}
-    };
-    */
-    /*
-    int tabuleiro[8][4] = {
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
+        { 0, 0, 1, 0},
         { 0,-1, 0, 0},
-        { 0, 0, 0, 0},
+        { 0, 0, 1, 0},
         { 0,-1, -1, 0},
         { 0, 1, 0, 0},
         { 0, 0, 0, 0}
@@ -182,6 +209,8 @@ int main(){
     
     // Enquanto o jogo não acabar ... 
     while(!atual->eFolha()){
+        turno++;
+        std::cout<<"Turno: "<<turno <<std::endl;
         maiorH = -DBL_MAX;
         double h = minimax(atual, escolhaIA->geteMax(), -DBL_MAX, DBL_MAX, maxProfundide);
         std::cout<<std::endl<<"-------IA-------"<<std::endl<<std::endl;
@@ -222,9 +251,24 @@ int main(){
             atual->imprime();
             std::cout << "----------------\n" << std::endl;
         }
-        int escolha;
-        std::cout<<"Numero da jogada: "; std::cin >> escolha;
-        atual = dynamic_cast<EstadoDamas *>(escolhas[escolha]);
+        if(!escolhas.empty()){
+            /*
+            int escolha;
+            std::cout<<"Numero da jogada: "; std::cin >> escolha;
+            atual = dynamic_cast<EstadoDamas *>(escolhas[escolha]);
+            
+            */
+            //JOGAR AUTOMATICO DE FORMA ALEATORIA
+            srand(time(0)); 
+            int randomNum = rand() % escolhas.size();
+            std::cout<<"Numero da jogada: " << randomNum << std::endl; 
+            atual = dynamic_cast<EstadoDamas *>(escolhas[randomNum]);
+            
+        }else{
+            std::cout << "Sem jogadas disponiveis" << std::endl;
+            return 0;
+        }
+        
 
         //atual = escolhaIA->jogadaHumano();
         //std::cout << "atual: " << atual << std::endl;

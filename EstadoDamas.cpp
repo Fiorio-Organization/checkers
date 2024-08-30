@@ -268,6 +268,8 @@ bool EstadoDamas::ePermitidoRei(int tabuleiro[8][4], int linha, int coluna, int 
         }
     }
     return tabuleiro[linha][coluna] == 0;
+    
+    return false;
 }
 
 void EstadoDamas::movePeca(int i, int j, int mov, int tabuleiroFilho[8][4]){
@@ -343,7 +345,7 @@ void EstadoDamas::movePeca(int i, int j, int mov, int tabuleiroFilho[8][4]){
             tabuleiroFilho[i+1][j] = 0;
     }
 
-    temCoroacao(tabuleiro);
+    temCoroacao(tabuleiroFilho);
 }
 
 void EstadoDamas::moveRei(int i, int j, int mov, int tabuleiroFilho[8][4], int p){
@@ -432,11 +434,10 @@ void EstadoDamas::moveRei(int i, int j, int mov, int tabuleiroFilho[8][4], int p
         */
     }
     tabuleiroFilho[i][j] = pecaAtual;
-    temCoroacao(tabuleiro);
 }
 
 std::vector<Estado *> EstadoDamas::seqCaptura(int tabuleiro[8][4], int i, int j, int mov, short int profundidade){
-    std::vector <Estado *> filhos;
+    std::vector <Estado *> filhos,newFilhos;
     bool teveJogada = false;
     short int prof_local=profundidade - 1, prof_global = this->profJogada;
 
@@ -482,8 +483,12 @@ std::vector<Estado *> EstadoDamas::seqCaptura(int tabuleiro[8][4], int i, int j,
                     filhos.erase(filhos.begin(),filhos.begin()+filhos.size());
             }
             //prof_local = ;
-            seqCaptura(tabuleiroFilho, i, j, mov, profundidade + 1);
+            newFilhos = seqCaptura(tabuleiroFilho, i, j, mov, profundidade + 1);
             
+            if(!newFilhos.empty()){
+                for(int l=0;l<newFilhos.size();l++)
+                    filhos.push_back(newFilhos[l]);
+            }
         }
     }
 
