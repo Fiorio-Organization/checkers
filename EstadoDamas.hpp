@@ -22,8 +22,6 @@ class EstadoDamas : public Estado{
         
         bool eFolha();
         double heuristica();
-
-        //bool eAliado(int i,int j,int dir,int profundidade);
         
         void movePeca(int i, int j, int dir, int tabuleiroFilho[8][4]); //int iOrig, int jOrig,
         void moveRei(int i, int j, int dir, int tabuleiroFilho[8][4], int p);

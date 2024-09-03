@@ -54,8 +54,8 @@ double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundi
                     escolhaIA = dynamic_cast<EstadoDamas *>(filhos[i]);
                 }
             }
-            /*
-            // SEGREDO!!!
+            /* 
+            // Poda
             if(alfa >= beta){
                 return h;
             }
@@ -103,7 +103,7 @@ void formataTabuleiro(int tabuleiro[8][4]){
 int main(){
 
     // tabuleiro inicial
-    /*
+    /**/
     int tabuleiro[8][4] = {
         {-1,-1,-1,-1},
         {-1,-1,-1,-1},
@@ -114,90 +114,7 @@ int main(){
         { 1 ,1 ,1 ,1},
         { 1 ,1 ,1 ,1}
     };
-    */
-    /*
-    int tabuleiro[8][4] = {
-        { 0, -1, 0, -1},
-        { -1, -1, 0, 0},
-        { 0, 1, 0, -1},
-        { 0, 1, 0, 0},
-        { 1, 1, 1, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 1, 1, 1, 1}
-    };
-    */
-    /* 
-      int tabuleiro[8][4] = {
-        { 0, -1, 0, -1},
-        { -1, -1, 0, 0},
-        { 0, 0, 0, -1},
-        { 0, 1, 1, 0},
-        { 1, 1, 1, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 1, 1, 1, 1}
-    };
-    */
-    int tabuleiro[8][4] = {
-        {-1, -1, 0, -1},
-        { -1, -1, 0, 0},
-        { 0, 1, 0, -1},
-        { 0, 1, 0, 0},
-        { 1, 1, 1, 0},
-        { 0, 0, 1, 0},
-        { 0, 0,-1, 0},
-        { 1, 1, 0, 0}
-    };
-    
-    /*
-    int tabuleiro[8][4] = {
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 1, 0},
-        { 0,-1, 0, 0},
-        { 0, 0, 1, 0},
-        { 0,-1, -1, 0},
-        { 0, 1, 0, 0},
-        { 0, 0, 0, 0}
-    };
-    */
-    /*
-    int tabuleiro[8][4] = {
-        { 0, 0, -1, 0},
-        { 0, 0, -1, 0},
-        { 0, 0, 0, 0},
-        { 0, 0,-1, 0},
-        { 0, 0, 0, 0},
-        { 0,-1, -1, 0},
-        { 0, 1, 0, 0},
-        { 0, 0, 0, 0}
-    };
-    */
-    /*
-    int tabuleiro[8][4] = {
-        { 3, 0, 0, 0},
-        { -1, 0, 0, 0},
-        { -1, 0, 0, 0},
-        { 0, -1, 0, 0},
-        { 0, -1, 0, 0},
-        { 0, 0, -1, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0}
-    };
-    */
-    /*
-    int tabuleiro[8][4] = {
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { -1, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 1, 0, 0}
-    };
-    */
+
     formataTabuleiro(tabuleiro);
     
     escolhaIA = new EstadoDamas(tabuleiro, true);
@@ -207,7 +124,6 @@ int main(){
     std::cout<<std::endl<<"Dificuldade: "<<maxProfundide<<std::endl;
     std::cout<<std::endl<<"----------------"<<std::endl<<std::endl;
     
-    // Enquanto o jogo não acabar ... 
     while(!atual->eFolha()){
         turno++;
         std::cout<<"Turno: "<<turno <<std::endl;
@@ -252,6 +168,7 @@ int main(){
             std::cout << "----------------\n" << std::endl;
         }
         if(!escolhas.empty()){
+            // Escolher entre jogar manualmente ou automatico
             /*
             int escolha;
             std::cout<<"Numero da jogada: "; std::cin >> escolha;
@@ -269,9 +186,6 @@ int main(){
             return 0;
         }
         
-
-        //atual = escolhaIA->jogadaHumano();
-        //std::cout << "atual: " << atual << std::endl;
         std::cout<<std::endl<<"Debug:"<<std::endl;
         std::cout<<"eFolha: "<<atual->eFolha()<<std::endl;
         std::cout<<"Heuristica: "<<atual->heuristica()<<std::endl;

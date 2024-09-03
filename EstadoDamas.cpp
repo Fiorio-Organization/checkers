@@ -441,13 +441,6 @@ std::vector<Estado *> EstadoDamas::seqCaptura(int tabuleiro[8][4], int i, int j,
     bool teveJogada = false;
     short int prof_local=profundidade - 1, prof_global = this->profJogada;
 
-    //if(prof_local > this->profJogada)
-        //this->profJogada = prof_local;
-
-    // mudar valores de i e j para apontar a peca certa na matriz
-    
-    //movePeca(i,j,mov,tabuleiro);
-
     if(mov == 5){ 
         i-=2;
         j--;
@@ -551,40 +544,14 @@ std::vector<Estado *> EstadoDamas::expandir(bool eMax){
                 }
                 
             }
-            /*
-            if(tabuleiro[i][j] == (x*3)){ // se é um rei
-                for(int mov=5;mov<=8;mov++){
-                    if(ePermitidoRei(tabuleiro,i,j,mov)){
-                        int tabuleiroFilho[8][4]; // criar filho temporario igual o pai
-                        this->copia(this->tabuleiro, tabuleiroFilho);
-                        movePeca(i,j,mov,tabuleiroFilho);
-                        this->profJogada = this->profJogada<1 ? 1 : this->profJogada;
-                        
-                        prof_local = this->profJogada;
-                        newFilhos = seqCaptura(tabuleiroFilho, i, j, mov, 2);
-                        if(prof_local!=this->profJogada){ // this->profJogada foi alterado?
-                            // foi alterado, então deletar todo conteudo do vetor filhos
-                            if(!filhos.empty())
-                                filhos.erase(filhos.begin(),filhos.begin()+filhos.size());
-                        }
-
-                        if(!newFilhos.empty())
-                            for(int l=0;l<newFilhos.size();l++)
-                                filhos.push_back(newFilhos[l]);
-                    }
-                }
-                
-            }*/
         }
     }
 
     // SE não tem nenhuma jogada de captura
-    //if(filhos.empty()){
     if(this->profJogada==0){
         for(int i=0; i<8; i++){
             for(int j=0; j<4; j++){
                 if(tabuleiro[i][j] == x){
-                    // funcaoMovimento();
                     if(x==1){
                         for(int mov=1; mov<=2; mov++) // 1 = supEsq | 2 = supDir
                             if(ePermitido(tabuleiro,i,j,mov)){
@@ -657,98 +624,6 @@ std::vector<Estado *> EstadoDamas::expandir(bool eMax){
     }
     
     return filhos;
-    /*
-    if(eMax){ // pecas brancas
-        for(int i=0; i<8; i++)
-            for(int j=0; j<4; j++)
-                if(tabuleiro[i][j] == 1){
-                    // verifica se eh possivel capturar
-                    seqCaptura(tabuleiroFilho, i, j, profundidade++, x);
-                    seqCaptura(tabuleirom,i,j,profundidade, filhos, x);
-                
-                    for(int mov=1; mov<=8; mov++) //1 = supEsq | 2 = supDir | 3 = Esq | 4 = Dir | 5 = infEsq | 6 = infDir / dir é pra onde ta olhando
-
-                        //trata 1 peca e a move para a direcao dir somente
-                        if((mov<=2 || mov>=5) && ePermitido(i,j,mov)){ // verifica se o espaco na direcao dir é vazio para fazer o movimento nessa direcao mesmo
-                            int tabuleiroFilho[8][4]; // criar filho temporario igual o pai
-                            this->copia(this->tabuleiro, tabuleiroFilho);
-                            movePeca(i,j,mov,tabuleiroFilho);
-                            seqCaptura(tabuleiroFilho, i, j, mov, prof_local, x);
-                            
-    */
-                            //DEBUG
-                            /*
-                            c++;
-                            std::cout<<"CONTADOR: "<<c<<std::endl;
-                            std::cout<<"i: "<<i<<std::endl;
-                            std::cout<<"j: "<<j<<std::endl;
-                            std::cout<<"mov: "<<mov<<std::endl;
-                            
-                            std::cout<<"Tabuleiro PAI"<<std::endl;
-                            imprime(this->tabuleiro);
-                            std::cout<<"Tabuleiro FILHO"<<std::endl;
-                            imprime(tabuleiroFilho);
-                            */
-                            /*
-                            bool existe=false;
-                            for(int i=0; i< this->filhos.size();i++)
-                                if(this->filhos[i]->seExisteEstado(tabuleiroFilho)){
-                                    filhos.push_back(this->filhos[i]);
-                                    existe = true;
-                                }
-                            if(!existe){
-                                EstadoDamas * filho = new EstadoDamas(tabuleiroFilho, this->eMax);
-                            
-                                filhos.push_back(filho);
-                                this->filhos.push_back(filho);
-                            }
-                            
-                        }   
-                }
-    }
-    else // eMax == false
-        for(int i=0; i<8; i++)
-            for(int j=0; j<4; j++)
-                if(tabuleiro[i][j] == -1)
-                    // verifica se tem 1 peca aliada nessa direcao dir e se é possivel fazer o movimento para tal direcao
-                    for(int mov=3; mov<=8; mov++) //1 = supEsq | 2 = supDir | 3 = Esq | 4 = Dir | 5 = infEsq | 6 = infDir / dir é pra onde ta olhando
-                        //trata 1 peca e a move para a direcao dir somente
-                        if(ePermitido(i,j,mov)){ // verifica se o espaco na direcao dir é vazio para fazer o movimento nessa direcao mesmo
-                            int tabuleiroFilho[8][4]; // criar filho temporario igual o pai
-                            this->copia(this->tabuleiro, tabuleiroFilho);
-
-                            movePeca(i,j,mov,tabuleiroFilho);
-                            */
-                            //DEBUG
-                            /*
-                            c++;
-                            std::cout<<"CONTADOR: "<<c<<std::endl;
-                            std::cout<<"i: "<<i<<std::endl;
-                            std::cout<<"j: "<<j<<std::endl;
-                            std::cout<<"mov: "<<mov<<std::endl;
-                            
-                            std::cout<<"Tabuleiro PAI"<<std::endl;
-                            imprime(this->tabuleiro);
-                            std::cout<<"Tabuleiro FILHO"<<std::endl;
-                            imprime(tabuleiroFilho);
-                            */
-                            /*
-                            bool existe=false;
-                            for(int i=0; i< this->filhos.size();i++)
-                                if(this->filhos[i]->seExisteEstado(tabuleiroFilho)){
-                                    filhos.push_back(this->filhos[i]);
-                                    existe = true;
-                                }
-                            if(!existe){
-                                EstadoDamas * filho = new EstadoDamas(tabuleiroFilho, this->eMax);
-                            
-                                filhos.push_back(filho);
-                                this->filhos.push_back(filho);
-                            }
-                        }   
-    
-    return filhos;
-    */
 }
 
 EstadoDamas * EstadoDamas::jogadaHumano(){
