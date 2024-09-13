@@ -28,7 +28,7 @@
 
 EstadoDamas * escolhaIA;
 double maiorH = -DBL_MAX;
-int maxProfundide = 7, turno = 0;
+int maxProfundide = 1, turno = 0;
 // 1- muito fácil / 3 - fácil / 5 - médio / 7 - difícil / 9 - muito difícil
 
 double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundidade){
@@ -103,7 +103,7 @@ void formataTabuleiro(int tabuleiro[8][4]){
 int main(){
 
     // tabuleiro inicial
-    /*
+    /**/
     int tabuleiro[8][4] = {
         {-1,-1,-1,-1},
         {-1,-1,-1,-1},
@@ -114,7 +114,7 @@ int main(){
         { 1 ,1 ,1 ,1},
         { 1 ,1 ,1 ,1}
     };
-    */
+    
     /*
     int tabuleiro[8][4] = {
         { 0, -1, 0, -1},
@@ -139,6 +139,7 @@ int main(){
         { 1, 1, 1, 1}
     };
     */
+    /*
     int tabuleiro[8][4] = {
         {-1, -1, 0, -1},
         { -1, -1, 0, 0},
@@ -149,7 +150,7 @@ int main(){
         { 0, 0,-1, 0},
         { 1, 1, 0, 0}
     };
-    
+    */
     /*
     int tabuleiro[8][4] = {
         { 0, 0, 0, 0},
@@ -186,18 +187,41 @@ int main(){
         { 0, 0, 0, 0}
     };
     */
+    /*int tabuleiro[8][4] = {
+        { 0, 0, 0, 0},
+        { 1, 1, 0, 0},
+        { -3, 0, 1, 0},
+        { 1, 1, 0, 0},
+        { 0, 0, 0, 0},
+        { 1, 0, 0, 0},
+        { -1, 0, 1, 0},
+        { 0, 0, 0, 0}
+    };*/
     /*
     int tabuleiro[8][4] = {
         { 0, 0, 0, 0},
+        { 1, 1, 1, 0},
+        { -3, 0, 1, 0},
+        { 1, 1, 0, 0},
         { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
-        { 0, 0, 0, 0},
+        { 1, 0, 0, 0},
+        { -1, 0, 1, 0},
+        { 0, 0, 0, 0}
+    };
+    
+
+   int tabuleiro[8][4] = {
         { -1, 0, 0, 0},
+        { 0, 1, 1, 0},
         { 0, 0, 0, 0},
-        { 0, 1, 0, 0}
+        { 0, 0, 1, 0},
+        { 0, 0, 0, 0},
+        { 1, 0, 0, 0},
+        { -1, 0, 0, 0},
+        { 0, 0, 0, 0}
     };
     */
+
     formataTabuleiro(tabuleiro);
     
     escolhaIA = new EstadoDamas(tabuleiro, true);

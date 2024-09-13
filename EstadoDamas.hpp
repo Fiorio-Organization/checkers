@@ -10,7 +10,6 @@ class EstadoDamas : public Estado{
         bool eMax;
         void copia(int origem[8][4], int destino[8][4]);
         bool ePermitido(int tabuleiro[8][4], int linha, int coluna, int mov);
-        bool ePermitidoRei(int tabuleiro[8][4], int linha, int coluna, int mov);
         bool ePermitidoRei(int tabuleiro[8][4], int linha, int coluna, int mov, int p);
         short int profRei;
         
@@ -18,6 +17,7 @@ class EstadoDamas : public Estado{
         EstadoDamas(int tabuleiro[8][4], bool eMax);
 
         std::vector<Estado *> seqCaptura(int tabuleiro[8][4], int i, int j, int mov, short int profundidade);
+        std::vector<Estado *> seqCapturaRei(int tabuleiro[8][4], int i, int j, int mov, int p, short int profundidade);
         short int profJogada; // profundidade da jogada, representa o num de movimentos de captura que a peca consegue fazer no maximo na jogada
         
         bool eFolha();
