@@ -29,6 +29,10 @@
 EstadoDamas * escolhaIA;
 double maiorH = -DBL_MAX;
 int maxProfundide = 1, turno = 0;
+
+// variaveis usadas nas configurações do jogo
+bool pecasIA, pecasJ;
+short int dif;
 // 1- muito fácil / 3 - fácil / 5 - médio / 7 - difícil / 9 - muito difícil
 
 double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundidade){
@@ -48,12 +52,13 @@ double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundi
             h = std::max(h, hFilho);
             //alfa = std::max(alfa, hFilho);
             // Tô na raiz?
-            if(profundidade == maxProfundide){
-                if(h > maiorH){
-                    maiorH = h;
-                    escolhaIA = dynamic_cast<EstadoDamas *>(filhos[i]);
+            if(escolhaIA->geteMax())
+                if(profundidade == maxProfundide){
+                    if(h > maiorH){
+                        maiorH = h;
+                        escolhaIA = dynamic_cast<EstadoDamas *>(filhos[i]);
+                    }
                 }
-            }
             /*
             // SEGREDO!!!
             if(alfa >= beta){
@@ -75,6 +80,13 @@ double minimax(Estado * atual, bool eMax, double alfa, double beta, int profundi
                 return h;
             }
             */
+            if(!escolhaIA->geteMax())
+                if(profundidade == maxProfundide){
+                    if(h > maiorH){
+                        maiorH = h;
+                        escolhaIA = dynamic_cast<EstadoDamas *>(filhos[i]);
+                    }
+                }
         }
     }
     // Se nenhuma poda ocorreu, propaga para o pai o h calculado!
@@ -98,6 +110,18 @@ void formataTabuleiro(int tabuleiro[8][4]){
 
     for(int j=0;j<4;j++)
         tabuleiro[7][j] = tabuleiro[7][j] == -1 ? tabuleiro[7][j]*3 : tabuleiro[7][j];
+}
+
+void config(){
+    std::cout << "\n\tPAINEL DE CONFIGURAÇÃO\n" << std::endl;
+    std::cout << "Cor IA\n(0)Pretas ou (1)Brancas: " << std::endl;
+    std::cin >> pecasIA;
+    pecasJ = true;
+    if(pecasIA)
+        pecasJ = false;
+    std::cout << "Dificuldade: " << std::endl;
+    std::cout << " (1) - muito fácil \n (3) - fácil \n (5) - médio \n (7) - difícil \n (9) - muito difícil" << std::endl;
+    std::cin >> dif;
 }
 
 int main(){
@@ -224,15 +248,20 @@ int main(){
 
     formataTabuleiro(tabuleiro);
     
-    escolhaIA = new EstadoDamas(tabuleiro, true);
+    escolhaIA = new EstadoDamas(tabuleiro, false);
     EstadoDamas * atual = new EstadoDamas(tabuleiro, true);
     atual->imprime();
     std::cout<<std::endl<<"Heuristica Inicial: "<<atual->heuristica()<<std::endl;
     std::cout<<std::endl<<"Dificuldade: "<<maxProfundide<<std::endl;
     std::cout<<std::endl<<"----------------"<<std::endl<<std::endl;
     
+    // PAINEL DE CONFIGURAÇÃO
+    config();
+    
     // Enquanto o jogo não acabar ... 
     while(!atual->eFolha()){
+        maxProfundide = dif;
+        escolhaIA->seteMax(pecasIA);
         turno++;
         std::cout<<"Turno: "<<turno <<std::endl;
         maiorH = -DBL_MAX;
@@ -267,7 +296,7 @@ int main(){
         
         std::cout<<std::endl<<"-----PLAYER-----"<<std::endl<<std::endl;
     
-        std::vector <Estado *> escolhas = escolhaIA->expandir(false);
+        std::vector <Estado *> escolhas = escolhaIA->expandir(pecasJ);
         std::cout << "Escolha sua Jogada\n" << std::endl;
         for(int i = 0; i < escolhas.size(); i++){
             atual = dynamic_cast<EstadoDamas *>(escolhas[i]);
@@ -276,17 +305,18 @@ int main(){
             std::cout << "----------------\n" << std::endl;
         }
         if(!escolhas.empty()){
-            /*
+            
             int escolha;
             std::cout<<"Numero da jogada: "; std::cin >> escolha;
             atual = dynamic_cast<EstadoDamas *>(escolhas[escolha]);
             
-            */
+            /*
             //JOGAR AUTOMATICO DE FORMA ALEATORIA
             srand(time(0)); 
             int randomNum = rand() % escolhas.size();
             std::cout<<"Numero da jogada: " << randomNum << std::endl; 
             atual = dynamic_cast<EstadoDamas *>(escolhas[randomNum]);
+            */
             
         }else{
             std::cout << "Sem jogadas disponiveis" << std::endl;

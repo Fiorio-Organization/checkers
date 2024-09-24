@@ -12,6 +12,10 @@ void EstadoDamas::setProfRei(short int profRei){
     this->profRei = profRei;
 }
 
+void EstadoDamas::seteMax(bool eMax){
+    this->eMax = eMax;
+}
+
 short int EstadoDamas::getProfRei(){
     return this->profRei;
 }

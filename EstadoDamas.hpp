@@ -41,9 +41,11 @@ class EstadoDamas : public Estado{
         std::vector<EstadoDamas *> filhos;
 
         void setProfRei(short int profRei);
+        void seteMax(bool eMax);
 
         short int getProfRei();
         bool geteMax();
+
 
         /*[Linha][Coluna]
         (1)Move Superior esquerdo
