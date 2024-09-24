@@ -6,7 +6,7 @@
 
 class EstadoDamas : public Estado{
     private:
-        int tabuleiro[8][4]; // 0 = vazio | 1 = MAX | -1 = MIN | 3 = fora
+        
         bool eMax;
         void copia(int origem[8][4], int destino[8][4]);
         bool ePermitido(int tabuleiro[8][4], int linha, int coluna, int mov);
@@ -14,6 +14,7 @@ class EstadoDamas : public Estado{
         short int profRei;
         
     public:
+        int tabuleiro[8][4]; // 0 = vazio | 1 = MAX | -1 = MIN | 3 = fora
         EstadoDamas(int tabuleiro[8][4], bool eMax);
 
         std::vector<Estado *> seqCaptura(int tabuleiro[8][4], int i, int j, int mov, short int profundidade);
@@ -46,6 +47,7 @@ class EstadoDamas : public Estado{
         short int getProfRei();
         bool geteMax();
 
+        int getTabuleiro();
 
         /*[Linha][Coluna]
         (1)Move Superior esquerdo

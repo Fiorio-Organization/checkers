@@ -24,6 +24,10 @@ bool EstadoDamas::geteMax(){
     return this->eMax;
 }
 
+int EstadoDamas::getTabuleiro(){
+    return this->tabuleiro[8][4];
+}
+
 
 void EstadoDamas::copia(int origem[8][4], int destino[8][4]){
     for(int i = 0; i < 8; i++){
